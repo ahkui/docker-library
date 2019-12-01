@@ -54,6 +54,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libzmq3-dev \
     libpq-dev \
     && \
+    git config --global http.sslVerify false \
+    && \
     git config --global credential.helper store \
     && \
     apt-get clean \

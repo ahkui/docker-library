@@ -9,5 +9,6 @@ build () {
 build "wrk"
 build "jupyter"
 build "jupyterhub"
+build "jupyter-ml"
 build "jupyter-ml-cpu"
 build "jupyter-ml-gpu"

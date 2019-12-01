@@ -1,11 +1,8 @@
 FROM ahkui/jupyter:latest
-LABEL maintainer="ahkui <ahkui@outlook.com>"
 ARG DEBIAN_FRONTEND=noninteractive
 
 COPY notebooks /root/notebooks
 
-ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
-ARG JUPYTERHUB_ENABLE_NVIDIA=false
 ARG PIP="opencv-python keras keras_applications keras_preprocessing"
 RUN python2 -m pip --no-cache-dir install \
     ${PIP} && \
@@ -40,6 +37,42 @@ RUN export CUDA_VERSION_DASH=`echo ${CUDA_VERSION} | sed -e "s/\./-/g"` && \
     && \
     rm -rf /var/lib/apt/lists/*
 
+ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
+ARG OPENPOSE_MODELS_PROVIDER=http://posefs1.perception.cs.cmu.edu/OpenPose/models/
+RUN git clone --depth=1 https://github.com/CMU-Perceptual-Computing-Lab/openpose.git \
+    && \
+    cd openpose \
+    && \
+    git submodule update --init --recursive \
+    && \
+    cd models \
+    && \
+    sed -i "s,http://posefs1.perception.cs.cmu.edu/OpenPose/models/,$OPENPOSE_MODELS_PROVIDER,g" getModels.sh \
+    && \
+    ./getModels.sh \
+    && \
+    cd .. \
+    && \
+    mkdir build
+
+
+ARG JUPYTERHUB_ENABLE_NVIDIA=false
+
+RUN if [ ${JUPYTERHUB_ENABLE_NVIDIA} = true ]; then \
+    # run the install
+    python2 -m pip --no-cache-dir install \
+    tensorflow-gpu \
+    && \
+    python3 -m pip --no-cache-dir install \
+    tensorflow-gpu \
+    ;else \
+    python2 -m pip --no-cache-dir install \
+    tensorflow \
+    && \
+    python3 -m pip --no-cache-dir install \
+    tensorflow \
+    ;fi
+
 RUN if [ ${JUPYTERHUB_ENABLE_NVIDIA} = true ]; then \
     apt-get update && apt-get install -y --no-install-recommends \
     caffe-cuda \
@@ -58,38 +91,7 @@ RUN if [ ${JUPYTERHUB_ENABLE_NVIDIA} = true ]; then \
     rm -rf /var/lib/apt/lists/* \
     ;fi
 
-RUN if [ ${JUPYTERHUB_ENABLE_NVIDIA} = true ]; then \
-    # run the install
-    python2 -m pip --no-cache-dir install \
-    tensorflow-gpu \
-    && \
-    python3 -m pip --no-cache-dir install \
-    tensorflow-gpu \
-    ;else \
-    python2 -m pip --no-cache-dir install \
-    tensorflow \
-    && \
-    python3 -m pip --no-cache-dir install \
-    tensorflow \
-    ;fi
-
-ARG OPENPOSE_MODELS_PROVIDER=http://posefs1.perception.cs.cmu.edu/OpenPose/models/
-RUN git clone --depth=1 https://github.com/CMU-Perceptual-Computing-Lab/openpose.git \
-    && \
-    cd openpose \
-    && \
-    git submodule update --init --recursive \
-    && \
-    cd models \
-    && \
-    sed -i "s,http://posefs1.perception.cs.cmu.edu/OpenPose/models/,$OPENPOSE_MODELS_PROVIDER,g" getModels.sh \
-    && \
-    ./getModels.sh \
-    && \
-    cd .. \
-    && \
-    mkdir build && \
-    cd /openpose/build \
+RUN cd /openpose/build \
     && \
     if [ ${JUPYTERHUB_ENABLE_NVIDIA} = true ]; then \
     echo ENABLE NVIDIA $JUPYTERHUB_ENABLE_NVIDIA && \

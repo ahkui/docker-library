@@ -9,6 +9,7 @@ RUN apt update && \
     libssl-dev \
     git \
     && \
+    git config --global http.sslVerify false && \
     apt-get clean \
     && \
     rm -rf /var/lib/apt/lists/* && \
