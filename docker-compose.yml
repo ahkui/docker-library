@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  wrk:
+    build:
+      context: ./wrk
+      dockerfile: Dockerfile
+    image: ahkui/wrk:latest
+
+  jupyter:
+    build:
+      context: ./jupyter
+      dockerfile: Dockerfile
+    image: ahkui/jupyter:latest
+
+  jupyterhub:
+    build:
+      context: ./jupyterhub
+      dockerfile: Dockerfile
+    image: ahkui/jupyterhub:latest
+
+  jupyter-ml-cpu:
+    build:
+      context: ./jupyter
+      dockerfile: ml.Dockerfile
+    image: ahkui/jupyter:ml-cpu
+
+  jupyter-ml-gpu:
+    build:
+      context: ./jupyter
+      dockerfile: ml.Dockerfile
+    image: ahkui/jupyter:ml-gpu
