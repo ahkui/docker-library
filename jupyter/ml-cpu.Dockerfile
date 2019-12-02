@@ -4,7 +4,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG JUPYTERHUB_ENABLE_NVIDIA=false
 
 RUN if [ ${JUPYTERHUB_ENABLE_NVIDIA} = true ]; then \
-    # run the install
     python2 -m pip --no-cache-dir install \
     tensorflow-gpu \
     && \
@@ -36,22 +35,22 @@ RUN if [ ${JUPYTERHUB_ENABLE_NVIDIA} = true ]; then \
     rm -rf /var/lib/apt/lists/* \
     ;fi
 
-RUN cd /openpose/build \
+RUN cd openpose/build \
     && \
     if [ ${JUPYTERHUB_ENABLE_NVIDIA} = true ]; then \
     echo ENABLE NVIDIA $JUPYTERHUB_ENABLE_NVIDIA && \
     cmake -D USE_OPENCV=ON -D USE_NCCL=ON -D BUILD_PYTHON=ON .. \
     ;else \
     echo ENABLE NVIDIA $JUPYTERHUB_ENABLE_NVIDIA && \
-    cmake -D BUILD_PYTHON=ON -D GPU_MODE=CPU_ONLY .. || true \
-    && \
+    cmake -D BUILD_PYTHON=ON -D GPU_MODE=CPU_ONLY .. || { \
     sed -i "362i }" ../3rdparty/caffe/src/caffe/layers/mkldnn_inner_product_layer.cpp \
     && \
     sed -i "358i {" ../3rdparty/caffe/src/caffe/layers/mkldnn_inner_product_layer.cpp \
     && \
-    cmake -D BUILD_PYTHON=ON -D GPU_MODE=CPU_ONLY .. \
+    cmake -D BUILD_PYTHON=ON -D GPU_MODE=CPU_ONLY .. ;} \
     ;fi \
     && \
     make -j`nproc` \
     && \
     make install
+

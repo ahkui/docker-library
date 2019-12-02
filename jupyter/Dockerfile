@@ -199,8 +199,6 @@ RUN chmod +x /usr/local/bin/start-singleuser.sh
 
 EXPOSE 6006 8888
 
-WORKDIR /root/notebooks
-
 ENTRYPOINT ["tini", "--"]
 
 CMD ["start-notebook.sh"]
