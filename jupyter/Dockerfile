@@ -3,7 +3,8 @@ FROM nvidia/cuda:${CUDA_VERSION}-cudnn7-devel
 
 RUN cp /etc/apt/sources.list /etc/apt/sources.list.bak
 
-RUN apt install -y jq curl && \
+RUN apt update && \
+    apt install -y jq curl && \
     export COUNTRY=$(curl ipinfo.io | jq '.country' | tr -d "\"") && \
     sed -i "s|http:\/\/security|http:\/\/$COUNTRY.archive|g" /etc/apt/sources.list && \
     sed -i "s|http:\/\/archive|http:\/\/$COUNTRY.archive|g" /etc/apt/sources.list
@@ -17,8 +18,8 @@ USER root
 
 WORKDIR /root
 
-COPY --from=1 /etc/apt/sources.list /etc/apt/sources.list
-COPY --from=1 /etc/apt/sources.list.bak /etc/apt/sources.list.bak
+COPY --from=0 /etc/apt/sources.list /etc/apt/sources.list
+COPY --from=0 /etc/apt/sources.list.bak /etc/apt/sources.list.bak
 COPY --from=ahkui/wrk:latest /usr/bin/wrk /usr/bin/wrk
 
 ENV PATH="/opt/cmake-3.14.2-Linux-x86_64/bin:${PATH}"

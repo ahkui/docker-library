@@ -9,10 +9,10 @@ RUN python2 -m pip --no-cache-dir install \
     python3 -m pip --no-cache-dir install \
     ${PIP}
 
-RUN export CUDA_VERSION_DASH=`echo ${CUDA_VERSION} | sed -e "s/\./-/g"` && \
-    export NVINFER_VERSION=`if [ "$CUDA_VERSION" == "10.1" ]; then echo 5; else echo 6; fi` && \
+RUN export CUDA_VERSION_DASH=`echo ${CUDA_VERSION} | cut -c1-4 | sed -e "s/\./-/g"` && \
+    export NVINFER_VERSION=`if [ "$CUDA_VERSION_DASH" = "10-1" ]; then echo 5; else echo 6; fi` && \
     apt-get update && apt-get install -y --no-install-recommends --allow-change-held-packages \
-    cuda-command-line-tools-${CUDA_VERSION_DASH} \
+    cuda-command-line-tools-$CUDA_VERSION_DASH \
     libcublas10 \
     libcublas-dev \
     cuda-cufft-${CUDA_VERSION_DASH} \
@@ -23,7 +23,7 @@ RUN export CUDA_VERSION_DASH=`echo ${CUDA_VERSION} | sed -e "s/\./-/g"` && \
     libnccl-dev \
     libfreetype6-dev \
     protobuf-compiler \
-    libnvinfer${NVINFER_VERSION} \
+    libnvinfer$NVINFER_VERSION \
     libnvinfer-dev \
     libprotobuf-dev \
     libopencv-dev \
