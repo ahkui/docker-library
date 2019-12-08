@@ -4,6 +4,8 @@
 # Configuration file for JupyterHub
 import os
 
+compose_project_name = os.environ.get('COMPOSE_PROJECT_NAME','jupyterhub')
+
 c = get_config()
 
 # Use jupyterlab as default editor
@@ -32,28 +34,17 @@ c.Spawner.pre_spawn_hook = create_dir_hook
 # avoid having to rebuild the JupyterHub container every time we change a
 # configuration parameter.
 
-from dockerspawner import DockerSpawner as _DockerSpawner
+from dockerspawner import DockerSpawner
 import json
 
 notebook_dir = '/root/notebooks'
 user_data = os.environ.get('JUPYTERHUB_USER_DATA','/opt/jupyterhub-user-data')
 
-class DockerSpawner(_DockerSpawner):
-
-    def start(self):
-        return super().start()
-        pass
-
-
 # Spawn single-user servers as Docker containers
-c.JupyterHub.spawner_class = _DockerSpawner
-# c.JupyterHub.spawner_class = DockerSpawner
+c.JupyterHub.spawner_class = DockerSpawner
 
 # Spawn containers from this image
-c.DockerSpawner.image = os.environ['JUPYTERHUB_LOCAL_NOTEBOOK_IMAGE']
-if c.DockerSpawner.image == '':
-    c.DockerSpawner.image = 'ahkui/jupyter:latest'
-    pass
+c.DockerSpawner.image = os.environ.get('JUPYTERHUB_LOCAL_NOTEBOOK_IMAGE', "ahkui/jupyter:latest")
 
 # JupyterHub requires a single-user instance of the Notebook server, so we
 # default to using the `start-singleuser.sh` script included in the
@@ -64,12 +55,13 @@ spawn_cmd = os.environ.get('JUPYTERHUB_DOCKER_SPAWN_CMD', "start-singleuser.sh")
 c.DockerSpawner.extra_create_kwargs.update({ 'command': spawn_cmd })
 
 # Connect containers to this Docker network
-network_name = os.environ.get('JUPYTERHUB_NETWORK_NAME','{}_default'.format(compose_project_name))
+network_name = os.environ.get('DOCKER_NETWORK_NAME', '{}_default'.format(compose_project_name))
 c.DockerSpawner.use_internal_ip = True
 c.DockerSpawner.network_name = network_name
 
 # Pass the network name as argument to spawned containers
-c.DockerSpawner.extra_host_config = { 'network_mode': network_name , 'privileged': True }
+# print(c.DockerSpawner.extra_host_config)
+c.DockerSpawner.extra_host_config = { 'privileged': True }
 # ISSUE: https://github.com/docker/docker-py/issues/2395
 # if 'true' == os.environ.get('JUPYTERHUB_ENABLE_NVIDIA','false'):
 #     c.DockerSpawner.extra_host_config = { 'network_mode': network_name, 'runtime': 'nvidia' }
@@ -87,8 +79,6 @@ c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.volumes = {
     os.path.join(user_data,'{username}','files'): notebook_dir
 }
-
-compose_project_name = os.environ.get('COMPOSE_PROJECT_NAME','jupyterhub')
 
 c.DockerSpawner.name_template = compose_project_name+'_lab-user-{username}_1'
 
@@ -123,8 +113,6 @@ data_dir = '/data'
 c.JupyterHub.cookie_secret_file = os.path.join(data_dir,
     'jupyterhub_cookie_secret')
 
-c.JupyterHub.proxy_auth_token = '0082e2212f7a645dbde953daf3c8a23c5b034a9fabe37b34e40cca9c22c624b0'
-
 c.JupyterHub.db_url = 'postgresql://{user}:{password}@{host}/{db}'.format(
     user=os.environ['JUPYTERHUB_POSTGRES_USER'],
     host=os.environ['JUPYTERHUB_POSTGRES_HOST'],
@@ -144,8 +132,4 @@ with open(os.path.join('/root/.jupyter/', 'admin.txt')) as f:
         parts = line.split()
         user = parts[0]
         print(user)
-#        whitelist.add(user)
-        if len(parts) > 1 and parts[1] == 'admin':
-            admin.add(user)
-admin.add('admin')
-admin.add('ahkui')
+        admin.add(user)
