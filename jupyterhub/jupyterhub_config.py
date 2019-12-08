@@ -80,7 +80,7 @@ c.DockerSpawner.volumes = {
     os.path.join(user_data,'{username}','files'): notebook_dir
 }
 
-c.DockerSpawner.name_template = compose_project_name+'_lab-user-{username}_1'
+c.DockerSpawner.name_template = compose_project_name+'-{username}'
 
 c.DockerSpawner.extra_create_kwargs.update({ 'user': 'root' })
 
