@@ -19,22 +19,19 @@ services:
       dockerfile: Dockerfile
     image: ahkui/jupyterhub:latest
 
-  jupyter-ml:
+  jupyter-ml-cpu:
+    build:
+      context: ./jupyter
+      dockerfile: ml.Dockerfile
+      args:
+        OPENPOSE_MODELS_PROVIDER: https://openpose.ahkui.com/
+        JUPYTERHUB_ENABLE_NVIDIA: "false"
+    image: ahkui/jupyter:ml
+
+  jupyter-ml-gpu:
     build:
       context: ./jupyter
       dockerfile: ml.Dockerfile
       args:
         OPENPOSE_MODELS_PROVIDER: https://openpose.ahkui.com/
     image: ahkui/jupyter:ml
-
-  jupyter-ml-cpu:
-    build:
-      context: ./jupyter
-      dockerfile: ml-cpu.Dockerfile
-    image: ahkui/jupyter:ml-cpu
-
-  jupyter-ml-gpu:
-    build:
-      context: ./jupyter
-      dockerfile: ml-gpu.Dockerfile
-    image: ahkui/jupyter:ml-gpu
