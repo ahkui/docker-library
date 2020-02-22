@@ -11,7 +11,7 @@ RUN python2 -m pip --no-cache-dir install \
 
 RUN export CUDA_VERSION_DASH=`echo ${CUDA_VERSION} | cut -c1-4 | sed -e "s/\./-/g"` && \
     export NVINFER_VERSION=`if [ "$CUDA_VERSION_DASH" = "10-1" ]; then echo 5; else echo 6; fi` && \
-    apt-get update && apt-get install -yqq --no-install-recommends --allow-change-held-packages \
+    apt update -qq && apt install -yqq --no-install-recommends --allow-change-held-packages \
     cuda-command-line-tools-$CUDA_VERSION_DASH \
     libcublas10 \
     libcublas-dev \
@@ -33,7 +33,7 @@ RUN export CUDA_VERSION_DASH=`echo ${CUDA_VERSION} | cut -c1-4 | sed -e "s/\./-/
     libhdf5-serial-dev \
     libatlas-base-dev \
     && \
-    apt-get clean \
+    apt clean \
     && \
     rm -rf /var/lib/apt/lists/*
 
@@ -72,19 +72,19 @@ RUN if [ ${JUPYTERHUB_ENABLE_NVIDIA} = true ]; then \
     ;fi
 
 RUN if [ ${JUPYTERHUB_ENABLE_NVIDIA} = true ]; then \
-    apt-get update && apt-get install -yqq --no-install-recommends \
+    apt update -qq && apt install -yqq --no-install-recommends \
     caffe-cuda \
     libcaffe-cuda-dev \
     && \
-    apt-get clean \
+    apt clean \
     && \
     rm -rf /var/lib/apt/lists/* \
     ;else \
-    apt-get update && apt-get install -yqq --no-install-recommends \
+    apt update -qq && apt install -yqq --no-install-recommends \
     caffe-cpu \
     libcaffe-cpu-dev \
     && \
-    apt-get clean \
+    apt clean \
     && \
     rm -rf /var/lib/apt/lists/* \
     ;fi

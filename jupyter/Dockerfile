@@ -3,7 +3,7 @@ FROM nvidia/cuda:${CUDA_VERSION}-cudnn7-devel
 
 RUN cp /etc/apt/sources.list /etc/apt/sources.list.bak
 
-RUN apt update && \
+RUN apt update -qq && \
     apt install -yqq jq curl && \
     export COUNTRY=$(curl ipinfo.io | jq '.country' | tr -d "\"") && \
     sed -i "s|http:\/\/security|http:\/\/$COUNTRY.archive|g" /etc/apt/sources.list && \
@@ -23,7 +23,7 @@ COPY --from=0 /etc/apt/sources.list.bak /etc/apt/sources.list.bak
 COPY --from=ahkui/wrk:latest /usr/bin/wrk /usr/bin/wrk
 
 ENV PATH="/opt/cmake-3.14.2-Linux-x86_64/bin:${PATH}"
-RUN apt-get update && apt-get install -yqq --no-install-recommends \
+RUN apt update -qq && apt install -yqq --no-install-recommends \
     software-properties-common \
     build-essential \
     python \
@@ -59,7 +59,7 @@ RUN apt-get update && apt-get install -yqq --no-install-recommends \
     && \
     git config --global credential.helper store \
     && \
-    apt-get clean \
+    apt clean \
     && \
     rm -rf /var/lib/apt/lists/* \
     && \
@@ -82,10 +82,10 @@ RUN wget --quiet -L https://bootstrap.pypa.io/get-pip.py && \
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
     && \
-    apt-get update && apt-get install -yqq --no-install-recommends \
+    apt update -qq && apt install -yqq --no-install-recommends \
     nodejs \
     && \
-    apt-get clean \
+    apt clean \
     && \
     rm -rf /var/lib/apt/lists/*
 
@@ -133,7 +133,7 @@ RUN npm install -g --unsafe-perm=true \
     rm -rf ~/.npm
 
 RUN add-apt-repository ppa:ondrej/php && \
-    apt-get update && apt-get install -yqq --no-install-recommends \
+    apt update -qq && apt install -yqq --no-install-recommends \
     php7.3 \
     php7.3-fpm \
     php7.3-curl \
@@ -147,7 +147,7 @@ RUN add-apt-repository ppa:ondrej/php && \
     php ./jupyter-php-installer.phar install && \
     rm jupyter-php-installer.phar \
     && \
-    apt-get clean \
+    apt clean \
     && \
     rm -rf /var/lib/apt/lists/*
 
@@ -172,13 +172,13 @@ RUN export TODAY=$(date +'%Y-%m-%d') && \
 
 ARG GRADLE_MAVEN=5.6.2
 ENV PATH=$PATH:/opt/gradle/gradle-$GRADLE_MAVEN/bin
-RUN apt update && apt install -yqq default-jdk maven && \
+RUN apt update -qq && apt install -yqq default-jdk maven && \
     wget -q https://services.gradle.org/distributions/gradle-$GRADLE_MAVEN-bin.zip && \
     mkdir /opt/gradle && \
     unzip -qq -d /opt/gradle gradle-$GRADLE_MAVEN-bin.zip && \
     rm gradle-$GRADLE_MAVEN-bin.zip \
     && \
-    apt-get clean \
+    apt clean \
     && \
     rm -rf /var/lib/apt/lists/*
 
