@@ -1,21 +1,16 @@
 name: Publish Docker Image
 
-on: [push]
+on:
+  push:
+    paths:
+      - "jupyter/**"
+      - "jupyterhub/**"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Publish WRK Image
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          dockerfile: ./Dockerfile
-          workdir: ./wrk
-          name: ahkui/wrk
-          tags: latest
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Publish Jupyter Image
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
