@@ -1,0 +1,51 @@
+name: Publish Docker Image
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Publish Jupyter Image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          dockerfile: ./Dockerfile
+          workdir: ./jupyter
+          name: ahkui/jupyter
+          tags: latest
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Publish Jupyter Image(CPU Machine Learning)
+        uses: elgohr/Publish-Docker-Github-Action@master
+        env:
+          JUPYTERHUB_ENABLE_NVIDIA: "false"
+        with:
+          dockerfile: ./ml.Dockerfile
+          workdir: ./jupyter
+          name: ahkui/jupyter
+          tags: cpu
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          buildargs: JUPYTERHUB_ENABLE_NVIDIA
+      - name: Publish Jupyter Image(GPU Machine Learning)
+        uses: elgohr/Publish-Docker-Github-Action@master
+        env:
+          JUPYTERHUB_ENABLE_NVIDIA: "true"
+        with:
+          dockerfile: ./ml.Dockerfile
+          workdir: ./jupyter
+          name: ahkui/jupyter
+          tags: gpu
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          buildargs: JUPYTERHUB_ENABLE_NVIDIA
+      - name: Publish JupyterHub Image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          dockerfile: ./Dockerfile
+          workdir: ./jupyterhub
+          name: ahkui/jupyterhub
+          tags: latest
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
