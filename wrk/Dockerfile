@@ -15,7 +15,7 @@ RUN apt update -qq && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --depth 1 https://github.com/wg/wrk.git wrk && \
     cd wrk && \
-    make -j $(nproc) && \
+    make --quiet -j $(nproc) && \
     mv wrk /usr/bin && \
     cd .. && \
     rm -rf wrk
