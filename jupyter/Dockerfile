@@ -31,6 +31,7 @@ RUN apt update -qq && apt install -yqq --no-install-recommends \
     python3 \
     python3-dev \
     pkg-config \
+    file \
     rsync \
     curl \
     wget \
