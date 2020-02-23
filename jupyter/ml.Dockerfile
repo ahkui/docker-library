@@ -49,7 +49,7 @@ RUN git clone --depth=1 https://github.com/CMU-Perceptual-Computing-Lab/openpose
     && \
     sed -i "s,http://posefs1.perception.cs.cmu.edu/OpenPose/models/,$OPENPOSE_MODELS_PROVIDER,g" getModels.sh \
     && \
-    sh getModels.sh >nul \
+    ./getModels.sh >nul \
     && \
     cd .. \
     && \
