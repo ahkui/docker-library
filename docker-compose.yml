@@ -19,6 +19,15 @@ services:
       dockerfile: Dockerfile
     image: ahkui/jupyterhub:latest
 
+  jupyter-cpu:
+    build:
+      context: ./jupyter
+      dockerfile: ml.Dockerfile
+      args:
+        OPENPOSE_MODELS_PROVIDER: https://openpose.ahkui.com/
+        JUPYTERHUB_ENABLE_NVIDIA: "false"
+    image: ahkui/jupyter:cpu
+
   jupyter-ml-cpu:
     build:
       context: ./jupyter
@@ -26,7 +35,7 @@ services:
       args:
         OPENPOSE_MODELS_PROVIDER: https://openpose.ahkui.com/
         JUPYTERHUB_ENABLE_NVIDIA: "false"
-    image: ahkui/jupyter:ml
+    image: ahkui/jupyter:ml-cpu
 
   jupyter-ml-gpu:
     build:
@@ -35,3 +44,19 @@ services:
       args:
         OPENPOSE_MODELS_PROVIDER: https://openpose.ahkui.com/
     image: ahkui/jupyter:ml
+
+  jupyter-ml-gpu:
+    build:
+      context: ./jupyter
+      dockerfile: ml.Dockerfile
+      args:
+        OPENPOSE_MODELS_PROVIDER: https://openpose.ahkui.com/
+    image: ahkui/jupyter:ml-gpu
+
+  jupyter-ml-gpu:
+    build:
+      context: ./jupyter
+      dockerfile: ml.Dockerfile
+      args:
+        OPENPOSE_MODELS_PROVIDER: https://openpose.ahkui.com/
+    image: ahkui/jupyter:gpu

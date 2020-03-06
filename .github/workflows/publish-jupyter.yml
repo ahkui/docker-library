@@ -20,6 +20,15 @@ jobs:
           tags: latest
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Publish JupyterHub Image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          dockerfile: ./Dockerfile
+          workdir: ./jupyterhub
+          name: ahkui/jupyterhub
+          tags: latest
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Publish Jupyter Image(CPU Machine Learning)
         uses: elgohr/Publish-Docker-Github-Action@master
         env:
@@ -44,12 +53,3 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           buildargs: JUPYTERHUB_ENABLE_NVIDIA
-      - name: Publish JupyterHub Image
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          dockerfile: ./Dockerfile
-          workdir: ./jupyterhub
-          name: ahkui/jupyterhub
-          tags: latest
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
