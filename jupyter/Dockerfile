@@ -117,8 +117,6 @@ RUN python3 -m pip --no-cache-dir install \
     django \
     selenium \
     jupyterlab \
-    jupyterlab-git \
-    jupyterlab_github \
     tornado==5.1.1 \
     jupyterhub \
     && \
@@ -188,16 +186,7 @@ RUN git clone --depth 1 https://github.com/SpencerPark/IJava.git && \
     chmod u+x gradlew && ./gradlew installKernel
 
 RUN jupyter labextension install \
-    @fissio/hub-topbar-buttons \
-    @jupyterlab/git \
-    @jupyterlab/github \
-    @jupyterlab/toc \
-    @jupyterlab/google-drive \
-    @jupyter-widgets/jupyterlab-manager \
-    && \
-    jupyter serverextension enable --py jupyterlab_git \
-    && \
-    jupyter serverextension enable --py jupyterlab_github \
+    @jupyterlab/hub-extension \
     && \
     jupyter lab clean \
     && \
