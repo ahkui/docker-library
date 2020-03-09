@@ -19,7 +19,6 @@ USER root
 WORKDIR /root
 
 COPY --from=0 /etc/apt/sources.list /etc/apt/sources.list
-COPY --from=0 /etc/apt/sources.list.bak /etc/apt/sources.list.bak
 COPY --from=ahkui/wrk:latest /usr/bin/wrk /usr/bin/wrk
 
 ENV PATH="/opt/cmake-3.14.2-Linux-x86_64/bin:${PATH}"
@@ -205,6 +204,7 @@ RUN cd ~ && \
     echo export LC_ALL=C.UTF-8 >> ~/.bashrc && \
     echo export LANG=C.UTF-8 >> ~/.bashrc
 
+COPY --from=0 /etc/apt/sources.list.bak /etc/apt/sources.list
 COPY start.sh /usr/local/bin/
 COPY start-notebook.sh /usr/local/bin/
 COPY start-singleuser.sh /usr/local/bin/
