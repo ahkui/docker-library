@@ -6,6 +6,7 @@ build () {
     docker-compose push $1
 }
 
+build "port-forwarding"
 build "wrk"
 build "jupyter"
 build "jupyterhub"
