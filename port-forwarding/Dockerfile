@@ -1,5 +1,8 @@
 FROM alpine
 
-RUN apk add --no-cache parallel socat
+RUN apk add --no-cache supervisor socat
 
-CMD parallel -v -N2 'socat TCP-LISTEN:{1},reuseaddr,fork TCP:$HOST:{2}' ::: $PORT
+COPY supervisord.conf /etc/supervisord.conf
+
+ENTRYPOINT supervisord -c /etc/supervisord.conf
+
