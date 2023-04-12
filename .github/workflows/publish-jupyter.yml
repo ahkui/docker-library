@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Publish Jupyter Image
-        uses: elgohr/Publish-Docker-Github-Action@master
+        uses: elgohr/Publish-Docker-Github-Action@v5
         with:
           dockerfile: ./Dockerfile
           workdir: ./jupyter
@@ -21,7 +21,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Publish JupyterHub Image
-        uses: elgohr/Publish-Docker-Github-Action@master
+        uses: elgohr/Publish-Docker-Github-Action@v5
         with:
           dockerfile: ./Dockerfile
           workdir: ./jupyterhub
@@ -30,7 +30,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Publish Jupyter Image(CPU Machine Learning)
-        uses: elgohr/Publish-Docker-Github-Action@master
+        uses: elgohr/Publish-Docker-Github-Action@v5
         env:
           JUPYTERHUB_ENABLE_NVIDIA: "false"
         with:
@@ -42,7 +42,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           buildargs: JUPYTERHUB_ENABLE_NVIDIA
       - name: Publish Jupyter Image(GPU Machine Learning)
-        uses: elgohr/Publish-Docker-Github-Action@master
+        uses: elgohr/Publish-Docker-Github-Action@v5
         env:
           JUPYTERHUB_ENABLE_NVIDIA: "true"
         with:
